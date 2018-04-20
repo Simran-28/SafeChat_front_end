@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SafeChat</string>
+    <string name="action_settings">Settings</string>
+    <string name="logo_image">logo_image</string>
+    <string name="username">username</string>
+    <string name="login">login</string>
+    <string name="password">Password</string>
+</resources>
