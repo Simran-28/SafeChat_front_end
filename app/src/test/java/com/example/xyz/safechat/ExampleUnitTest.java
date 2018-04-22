@@ -1,4 +1,4 @@
-package com.example.simran.login;
+package com.example.xyz.safechat;
 
 import org.junit.Test;
 

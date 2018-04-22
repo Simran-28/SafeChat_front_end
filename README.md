@@ -1,1 +1,0 @@
-# SafeChat_front_end
