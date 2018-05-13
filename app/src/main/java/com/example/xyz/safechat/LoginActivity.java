@@ -1,6 +1,7 @@
 package com.example.xyz.safechat;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,8 +24,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final EditText etUsername= (EditText) findViewById(R.id.etusername);
-        final EditText etPassword= (EditText) findViewById(R.id.etPassword);
+        final EditText etUsername = (EditText) findViewById(R.id.etUsername);
+        final EditText etPassword = (EditText) findViewById(R.id.etPassword);
         final Button bLogin = (Button) findViewById(R.id.bLogin);
         final TextView registerLink = (TextView) findViewById(R.id.tvRegisterHere);
 
@@ -39,44 +40,45 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                final String username= etUsername.getText().toString();
-                final String password = etPassword.getText().toString();
 
+                final String username = etUsername.getText().toString();
+                final String password = etPassword.getText().toString();
                 Response.Listener<String> responseListener = new Response.Listener<String>(){
 
                     @Override
                     public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonResponse = new JSONObject(response);
-                                    boolean success = jsonResponse.getBoolean("success");
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if(success==true || jsonResponse.getString("success").equals("true")) {
 
-                                    if(success) {
-                                        String fname = jsonResponse.getString("fname"));
+                                Intent intent = new Intent(LoginActivity.this,UserAreaActivity.class);
+                                intent.putExtra("userName", username);
+                                intent.putExtra("FirstName","fname");
 
-                                        Intent intent = new Intent(LoginActivity.this,UserAreaActivity.class);
-                                        intent.putExtra("name",fname);
-                                        intent.putExtra("username",username);
-
-                                        LoginActivity.this.startActivity(intent);
-                                }else
-                                    {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                                        builder.setMessage("Login failed")
-                                                .setNegativeButton("Retry", null)
-                                                .create()
-                                                .show();
-                                    }
-                                }
-                                catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                LoginActivity.this.startActivity(intent);
                             }
-                        };
+                            else
+                            {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                builder.setMessage("Login failed")
+                                        .setNegativeButton("Retry", null)
+                                        .create()
+                                        .show();
 
-                        LoginRequest loginRequest = new LoginRequest(username,password,responseListener);
-                        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-                        queue.add(loginRequest);
+                            }
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                });
+                };
+
+                LoginRequest loginRequest = new LoginRequest(username,password,responseListener);
+                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                queue.getCache().clear();
+                queue.add(loginRequest);
             }
-        }
+        });
+    }
+}
